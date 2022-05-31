@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_order_form_inherit_deardigital_webship_connector" model="ir.ui.view">
+        <field name="name">view.order.form.inherit.deardigital.webship.connector</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page string="Webship" name="webship_details">
+                    <group>
+                        <field name="webship_status"/>
+                        <field name="webship_reference"/>
+                        <field name="webship_track_and_trace"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
