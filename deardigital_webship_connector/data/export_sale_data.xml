@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cron_edi_sync_action_export_orders_dear_digital_bv_modules" model="ir.cron">
+            <field name="name">EDI Sync Action Export Sale Order</field>
+            <field name="model_id" ref="edi_document_sync.model_edi_sync_action"/>
+            <field name="state">code</field>
+            <field name="code">
+edi_actions = env['edi.sync.action'].search([('doc_type_id.doc_code', '=', 'export_sale_order_document')])
+edi_actions.do_doc_sync_user(use_new_cursor=True)
+            </field>
+            <field name="interval_number">5</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="False"/>
+            <field name="nextcall" eval="(datetime.now() + timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')"/>
+        </record>
+        <record id="cron_edi_sync_action_import_orders_dear_digital_bv_modules" model="ir.cron">
+            <field name="name">EDI Sync Action Import Sale Order</field>
+            <field name="model_id" ref="edi_document_sync.model_edi_sync_action"/>
+            <field name="state">code</field>
+            <field name="code">
+edi_actions = env['edi.sync.action'].search([('doc_type_id.doc_code', '=', 'import_sale_order_document')])
+edi_actions.do_doc_sync_user(use_new_cursor=True)
+            </field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="False"/>
+            <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 17:30:00')" />
+        </record>
+    </data>
+</odoo>
