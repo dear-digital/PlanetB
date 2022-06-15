@@ -152,6 +152,9 @@ class EDISyncAction(models.Model):
                                   required=True, index=True, copy=False)
     op_type = fields.Selection(related='doc_type_id.op_type', string='Action Operation Type',
                                store=True, readonly=True)
+    dir_path = fields.Char(string='Directory Path', required=True, default='/',
+                           help="Directory path on FTP host, used for importing or expoerting files."
+                                "'/' is root path in ftp host and path should always start with same")
     dir_mv_path = fields.Char(string='Move Directory Path', default='/',
                               help="Directory path on FTP host, used for moving file to after importing files."
                                    "'/' is root path in ftp host and path should always start with same.")

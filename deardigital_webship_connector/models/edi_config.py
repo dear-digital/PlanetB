@@ -128,7 +128,8 @@ class SyncDocumentType(models.Model):
                 cnopts = pysftp.CnOpts()
                 cnopts.hostkeys = None
                 with pysftp.Connection(host, username=user, password=key, cnopts=cnopts) as sftp:
-                    sftp.cd('/var/webshipexport')
+                    # sftp.cd('/var/webshipexport')
+                    sftp.cd(sync_action_id.dir_path + '/ orders.csv')
                     sftp.put(completeName, preserve_mtime=True)
                     sftp.close()
                     processed_orders = sale_orders.filtered(lambda order: order.id not in unprocessed_order_ids)
