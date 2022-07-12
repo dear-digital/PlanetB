@@ -83,6 +83,13 @@ class SyncDocumentType(models.Model):
             quantity = order_line.product_uom_qty
             connector = sale_order.name
             reference = sale_order.name
+            # New condition for product not to be send for webship
+                # When should a order not be synced to webship:
+                # • Warehouse set on delivery order = Geru
+                # • Contains SKU face wash experience box [05430003018194] and quantity is 1
+                # • Destination country of order is BE
+            if sku == '05430003018194' and quantity == 1 and shipping_country == 'BE' and order_line.order_id.warehouse_id.name == 'Geru':
+                continue
             required_fields_filled = all(
                 [client_name, shipping_address_1, shipping_postal_code, shipping_city, shipping_country, sku, quantity])
             if not required_fields_filled:
