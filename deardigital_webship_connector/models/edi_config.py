@@ -53,9 +53,27 @@ class SyncDocumentType(models.Model):
             'status',
         ]
 
+    def _filter_so_with_facewash(self, sale_orders):
+        sale_orders_to_return = []
+        for order in sale_orders:
+            partner = order.order_id.partner_shipping_id
+            shipping_country = partner.country_id.code if partner.country_id else ""
+            if order.product_id.default_code=='05430003018194' and \
+                order.product_uom_qty == 1 and \
+                order.order_id.warehouse_id.name=='Geru' and \
+                shipping_country == 'BE':
+                continue
+            elif order.product_id.categ_id.id in self._get_category_ids_to_ignore():
+                continue
+            else:
+                sale_orders_to_return.append(order)
+        return sale_orders_to_return
+
     def _do_export_sale_order_document(self, sync_action_id, values):
         yesterday = fields.Datetime.now() - timedelta(days=1)
         sale_orders = self.env['sale.order'].search([('date_order', '>=', yesterday), ('state', '=', 'sale')])
+        # Filter the sale order in following case
+        sale_orders = self._filter_so_with_facewash(sale_orders)
         unprocessed_order_ids = []
         data_list = []
         log_note = []
@@ -88,8 +106,8 @@ class SyncDocumentType(models.Model):
                 # • Warehouse set on delivery order = Geru
                 # • Contains SKU face wash experience box [05430003018194] and quantity is 1
                 # • Destination country of order is BE
-            if sku == '05430003018194' and quantity == 1 and shipping_country == 'BE' and order_line.order_id.warehouse_id.name == 'Geru':
-                continue
+            # if sku == '05430003018194' and quantity == 1 and shipping_country == 'BE' and order_line.order_id.warehouse_id.name == 'Geru':
+            #     continue
             required_fields_filled = all(
                 [client_name, shipping_address_1, shipping_postal_code, shipping_city, shipping_country, sku, quantity])
             if not required_fields_filled:
